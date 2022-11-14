@@ -43,10 +43,10 @@ const Table = (props: TableProps) => {
     const prevPage = useRef(0)
 
     useEffect(() => {
-        if(prevPage.current>currentPage) return
+        if (prevPage.current > currentPage) return
 
         prevPage.current = currentPage;
-       
+
         loadingContentCallback(currentPage)
     }, [currentPage])
 
@@ -78,7 +78,7 @@ const Table = (props: TableProps) => {
             </View>
         )
     }
-
+    const test = 1
     return (
         <>
             <View style={styles.racersHeader}>
@@ -168,7 +168,7 @@ const Table = (props: TableProps) => {
                     <Text style={styles.racersFooterText}>{nextPageText}</Text>
                 </TouchableOpacity>
             </View>
-          
+
         </>
     );
 };
