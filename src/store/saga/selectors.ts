@@ -1,0 +1,1 @@
+export const getNumberPage = (state) =>state.racersReducer.current_page
