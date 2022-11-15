@@ -5,5 +5,24 @@ export interface Racer {
     givenName: string,
     nationality: string,
     url: string,
-    code:string,
+    code: string,
+}
+
+export interface RacerCircuits {
+    Location: {
+        country: string,
+        lat: string,
+        locality: string,
+        long: string,
+    },
+    circuitId: string,
+    circuitName: string,
+    url: string
+}
+
+export interface RacerCircuitShortedData {
+    circuitName: string,
+    locality: string,
+    country: string,
+    url: string,
 }

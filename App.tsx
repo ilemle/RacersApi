@@ -5,6 +5,8 @@ import {
   useColorScheme,
 } from 'react-native';
 
+import { NavigationContainer } from '@react-navigation/native';
+
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
@@ -12,6 +14,7 @@ import { Provider } from 'react-redux';
 
 import RacersScreen from './src/screens/RacersScreen'
 import { store } from './src/store/redux/index';
+import { HomeStack } from './src/navigation/navigation';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -21,9 +24,11 @@ const App = () => {
   };
 
   return (
-    <Provider store={store}>
-      < RacersScreen />
-    </Provider>
+    <NavigationContainer>
+      <Provider store={store}>
+        <HomeStack />
+      </Provider>
+    </NavigationContainer>
   );
 };
 

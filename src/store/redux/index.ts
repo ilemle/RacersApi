@@ -12,3 +12,6 @@ const rootReducer = combineReducers({
 export const store = legacy_createStore(rootReducer, applyMiddleware(sagaMiddleware))
 
 sagaMiddleware.run(rootWatcher)
+
+
+export type RootState = ReturnType<typeof rootReducer>;

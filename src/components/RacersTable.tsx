@@ -11,22 +11,23 @@ import {
     TouchableOpacity,
 } from 'react-native'
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { paginationSize } from '../constants';
+import { loadedRacersPage } from '../store/redux/racers';
+import { Racer } from '../types';
 
 interface TableProps {
     isLoading: boolean,
-    data: any[],
+    data: Racer[],
     emptyListMessage?: string,
     headerText: string,
     prevPageText?: string,
     nextPageText?: string,
-    whiteList: any[],
     customNames: any[],
     loadingContentCallback: (number) => void,
 }
 
-const Table = (props: TableProps) => {
+const RacersTable = (props: TableProps) => {
 
     const {
         isLoading,
@@ -35,18 +36,23 @@ const Table = (props: TableProps) => {
         headerText,
         prevPageText = 'Назад',
         nextPageText = 'Вперёд',
-        whiteList,
         customNames,
         loadingContentCallback,
     } = props
 
+    const navigation = useNavigation();
+    const dispatch = useDispatch()
     const [currentPage, setCurrentPage] = useState(1)
     const prevPage = useRef(0)
 
+    const loadedPages: number[] = useSelector(state => state.racersReducer.loaded_racers_page)
     useEffect(() => {
-        if (prevPage.current > currentPage) return
+
+        if (currentPage < prevPage.current || loadedPages.includes(currentPage)) return
 
         prevPage.current = currentPage;
+
+        dispatch(loadedRacersPage(currentPage))
 
         loadingContentCallback(currentPage)
     }, [currentPage])
@@ -59,10 +65,7 @@ const Table = (props: TableProps) => {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
 
-    const _whiteList: any[] = _data.map(n => Object.fromEntries(Object.entries(n)
-        .filter(m => whiteList.includes(m[0]))))
-
-    if (isLoading) {
+    function Loader() {
         return (
             <View
                 style={{
@@ -97,54 +100,73 @@ const Table = (props: TableProps) => {
                 })}
             </View>
 
-            <FlatList
+            {
+                isLoading ? Loader()
+                    :
+                    <FlatList
 
-                data={_whiteList}
-                style={styles.racersList}
-                contentContainerStyle={{ flexGrow: 1 }}
-                ListEmptyComponent={() => {
-                    return (
-                        <View style={styles.racersEmpty}>
-                            <Text style={styles.racersEmptyText}>
-                                {emptyListMessage}
-                            </Text>
-                        </View>
-                    )
-                }}
+                        data={_data}
+                        style={styles.racersList}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        ListEmptyComponent={() => {
+                            return (
+                                <View style={styles.racersEmpty}>
+                                    <Text style={styles.racersEmptyText}>
+                                        {emptyListMessage}
+                                    </Text>
+                                </View>
+                            )
+                        }}
+                        keyExtractor={(item, index) => item.driverId + index}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <View
+                                    key={item.driverId + index}
 
-                renderItem={({ item, index }) => {
+                                    style={[styles.racersRow, { backgroundColor: index % 2 === 0 ? '#d6d0d0' : '#ffffff' }]}
+                                >
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('RacerCircuitsScreen', { driverId: item.driverId })}
+                                        key={index}
+                                        style={styles.tableCell}
+                                    >
+                                        <Text>
+                                            {'>>' + item.driverId + '<<'}
+                                        </Text>
+                                    </TouchableOpacity>
 
-                    let row: any[] = []
-                    for (const value in item) {
-                        row.push(item[value])
-                    }
-
-                    return (
-
-                        <TouchableOpacity
-                            onPress={() => { }}
-                            style={styles.racersRow}
-                        >
-                            {
-                                row.map((rowEl, index) => {
-                                    return (
+                                    <TouchableOpacity
+                                        style={styles.racersRow}
+                                        onPress={() => navigation.navigate('RacerProfileScreen', { data: item })}>
                                         <View
-                                            key={index + rowEl}
+                                            key={index}
                                             style={styles.tableCell}
                                         >
                                             <Text>
-                                                {rowEl}
+                                                {item.givenName}
                                             </Text>
                                         </View>
-                                    )
-                                })
-                            }
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.racersRow}
+                                        onPress={() => navigation.navigate('RacerProfileScreen', { data: item })}>
+                                        <View
+                                            key={index}
+                                            style={styles.tableCell}
+                                        >
+                                            <Text>
+                                                {item.familyName}
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
 
-                        </TouchableOpacity>
-                    )
-                }}
 
-            />
+                                </View>
+                            )
+                        }}
+
+                    />
+            }
             <View style={styles.racersFooter}>
 
                 <TouchableOpacity
@@ -239,4 +261,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Table;
+export default RacersTable;

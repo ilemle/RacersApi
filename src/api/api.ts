@@ -1,10 +1,14 @@
 import axios from 'axios'
+import { paginationSize } from '../constants'
 
 const baseUrl = 'http://ergast.com/api/f1'
 
-const testurl = 'https://jsonplaceholder.typicode.com/users?_limit=10'
 
-export const getRacers = (selectedPage:number) => {
-    // return axios.get(`${baseUrl}/drivers.json?limit=${10}&offset=${10}`).then(res => res.data)
-    return axios.get(`${baseUrl}/drivers.json?limit=${10}&offset=${selectedPage*10}`).then(res => res.data)
+export const getRacers = (selectedPage: number) => {
+    // alert(selectedPage)
+    return axios.get(`${baseUrl}/drivers.json?limit=${paginationSize}&offset=${selectedPage * paginationSize}`).then(res => res.data)
+}
+
+export const getRacerCircuits = (selectedPage: number, driverId: string) => {
+    return axios.get(`${baseUrl}/drivers/${driverId}/circuits.json?limit=${paginationSize}&offset=${selectedPage * paginationSize}`).then(res => res.data)
 }
