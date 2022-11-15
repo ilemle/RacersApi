@@ -3,6 +3,7 @@ import React from 'react';
 import {
   StyleSheet,
   useColorScheme,
+  Text
 } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -12,9 +13,9 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import { Provider } from 'react-redux';
 
-import RacersScreen from './src/screens/RacersScreen'
-import { store } from './src/store/redux/index';
+import { persistor, store } from './src/store/redux/index';
 import { HomeStack } from './src/navigation/navigation';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -26,9 +27,11 @@ const App = () => {
   return (
     <NavigationContainer>
       <Provider store={store}>
-        <HomeStack />
+        <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+          <HomeStack />
+        </PersistGate>
       </Provider>
-    </NavigationContainer>
+    </NavigationContainer >
   );
 };
 
