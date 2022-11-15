@@ -13,6 +13,7 @@ import {
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import { useDispatch } from 'react-redux';
 import { paginationSize } from '../constants';
+import Loader from './Loaders';
 
 interface TableProps {
     isLoading: boolean,
@@ -42,60 +43,51 @@ const Table = (props: TableProps) => {
 
     const [currentPage, setCurrentPage] = useState(1)
     const prevPage = useRef(0)
+    const isDarkMode = useColorScheme() === 'dark';
 
     useEffect(() => {
         if (prevPage.current > currentPage) return
-
         prevPage.current = currentPage;
-
         loadingContentCallback(currentPage)
     }, [currentPage])
 
     const _data = data.slice(currentPage * paginationSize - paginationSize, currentPage * paginationSize)
 
-    const isDarkMode = useColorScheme() === 'dark';
-
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
 
     const _whiteList: any[] = _data.map(n => Object.fromEntries(Object.entries(n)
         .filter(m => whiteList.includes(m[0]))))
 
     if (isLoading) {
-        return (
-            <View
-                style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
-                <ActivityIndicator
+        return <Loader />
+    }
 
-                    size={'large'}
-                    color={'green'}
-                />
-            </View>
-        )
+    const ThemeInstall = {
+        color: isDarkMode ?
+            '#ffffff'
+            :
+            '#000000',
+        borderColor: isDarkMode ?
+            '#ffffff'
+            :
+            '#000000'
     }
 
     return (
         <>
-            <View style={styles.racersHeader}>
+            {_whiteList.length > 0 && <View style={styles.racersHeader}>
                 {customNames.map((content, index) => {
                     return (
                         <View
                             key={index + content}
-                            style={styles.racersHeaderCell}
+                            style={[styles.racersHeaderCell, ThemeInstall]}
                         >
-                            <Text style={styles.racersHeaderText}>
+                            <Text style={[styles.racersHeaderText, ThemeInstall]}>
                                 {content}
                             </Text>
                         </View>
                     )
                 })}
-            </View>
+            </View>}
 
             <FlatList
 
@@ -105,7 +97,7 @@ const Table = (props: TableProps) => {
                 ListEmptyComponent={() => {
                     return (
                         <View style={styles.racersEmpty}>
-                            <Text style={styles.racersEmptyText}>
+                            <Text style={[styles.racersEmptyText, ThemeInstall]}>
                                 {emptyListMessage}
                             </Text>
                         </View>
@@ -130,9 +122,9 @@ const Table = (props: TableProps) => {
                                     return (
                                         <View
                                             key={index + rowEl}
-                                            style={styles.tableCell}
+                                            style={[styles.tableCell, ThemeInstall]}
                                         >
-                                            <Text>
+                                            <Text style={ThemeInstall}>
                                                 {rowEl}
                                             </Text>
                                         </View>
@@ -145,33 +137,37 @@ const Table = (props: TableProps) => {
                 }}
 
             />
-            <View style={styles.racersFooter}>
+            {_whiteList.length > 0 &&
+                <View style={[styles.racersFooter, ThemeInstall]}>
 
-                <TouchableOpacity
-                    disabled={currentPage === 1}
-                    onPress={() => {
-                        setCurrentPage(currentPage - 1)
+                    <TouchableOpacity
+                        disabled={currentPage === 1}
+                        onPress={() => {
+                            setCurrentPage(currentPage - 1)
 
-                    }}
-                >
-                    <Text
-                        style={[styles.racersFooterText, { color: currentPage === 1 ? 'gray' : '#000000' }]}
+                        }}
                     >
-                        {prevPageText}
-                    </Text>
-                </TouchableOpacity>
+                        <Text
+                            style={[styles.racersFooterText, isDarkMode ?
+                                { color: currentPage === 1 ? 'gray' : '#ffffff' }
+                                :
+                                { color: currentPage === 1 ? 'gray' : '#000000' }]}
+                        >
+                            {prevPageText}
+                        </Text>
+                    </TouchableOpacity>
 
-                <Text style={styles.racersFooterText}>{currentPage}</Text>
+                    <Text style={[styles.racersFooterText,ThemeInstall]}>{currentPage}</Text>
 
-                <TouchableOpacity onPress={() => {
-                    setCurrentPage(currentPage + 1)
-                }}
+                    <TouchableOpacity onPress={() => {
+                        setCurrentPage(currentPage + 1)
+                    }}
 
-                >
-                    <Text style={styles.racersFooterText}>{nextPageText}</Text>
-                </TouchableOpacity>
-            </View>
-
+                    >
+                        <Text style={[styles.racersFooterText,ThemeInstall]}>{nextPageText}</Text>
+                    </TouchableOpacity>
+                </View>
+            }
         </>
     );
 };

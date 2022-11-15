@@ -4,19 +4,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
     StyleSheet,
     useColorScheme,
-    Text,
-    View,
-    FlatList,
-    ActivityIndicator,
-    TouchableOpacity,
 } from 'react-native'
-import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import { useDispatch, useSelector } from 'react-redux';
-import { Racer, RacerCircuitShortedData } from '../types';
+import { Racer } from '../types';
 import Screen from '../components/Screen'
 import { racerCircuitsClean, racerCircuitsRequest } from '../store/redux/racers';
 import Table from '../components/Table';
 import { RootState } from '../store/redux';
+import BackButton from '../components/BackButton';
 
 
 const RacerCircuitsScreen = (props) => {
@@ -38,38 +33,12 @@ const RacerCircuitsScreen = (props) => {
 
         prevPage.current = currentPage;
 
-        // dispatch(racerCircuitsRequest({ page: currentPage, racerId: 'albon' }))
-
         return () => {
             dispatch(racerCircuitsClean())
         }
     }, [currentPage])
 
-    // const _data = data.slice(currentPage * 10 - 10, currentPage * 10)
-
     const isDarkMode = useColorScheme() === 'dark';
-
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
-
-    // if (racersCircuitsFetching) {
-    //     return (
-    //         <View
-    //             style={{
-    //                 flex: 1,
-    //                 justifyContent: 'center',
-    //                 alignItems: 'center',
-    //             }}
-    //         >
-    //             <ActivityIndicator
-
-    //                 size={'large'}
-    //                 color={'green'}
-    //             />
-    //         </View>
-    //     )
-    // }
 
     function getPage(number) {
         setCurrentPage(number)
@@ -77,11 +46,7 @@ const RacerCircuitsScreen = (props) => {
     return (
         <Screen>
             <>
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                >
-                    <Text style={styles.backButtonText}>Назад</Text>
-                </TouchableOpacity>
+                <BackButton />
                 <Table
                     isLoading={racersCircuitsFetching}
                     data={racerCircuits}

@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { paginationSize } from '../constants';
 import { loadedRacersPage } from '../store/redux/racers';
 import { Racer } from '../types';
+import Loader from './Loaders';
 
 interface TableProps {
     isLoading: boolean,
@@ -65,22 +66,15 @@ const RacersTable = (props: TableProps) => {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
 
-    function Loader() {
-        return (
-            <View
-                style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
-                <ActivityIndicator
-
-                    size={'large'}
-                    color={'green'}
-                />
-            </View>
-        )
+    const ThemeInstall = {
+        color: isDarkMode ?
+            '#ffffff'
+            :
+            '#000000',
+        borderColor: isDarkMode ?
+            '#ff2600'
+            :
+            '#000000'
     }
 
     return (
@@ -90,9 +84,9 @@ const RacersTable = (props: TableProps) => {
                     return (
                         <View
                             key={index + content}
-                            style={styles.racersHeaderCell}
+                            style={isDarkMode ? styles.racersHeaderCellDark : styles.racersHeaderCell}
                         >
-                            <Text style={styles.racersHeaderText}>
+                            <Text style={isDarkMode ? [styles.racersHeaderText, { color: '#ffffff' }] : styles.racersHeaderText}>
                                 {content}
                             </Text>
                         </View>
@@ -101,7 +95,8 @@ const RacersTable = (props: TableProps) => {
             </View>
 
             {
-                isLoading ? Loader()
+                isLoading ?
+                    <Loader />
                     :
                     <FlatList
 
@@ -123,15 +118,20 @@ const RacersTable = (props: TableProps) => {
                                 <View
                                     key={item.driverId + index}
 
-                                    style={[styles.racersRow, { backgroundColor: index % 2 === 0 ? '#d6d0d0' : '#ffffff' }]}
+                                    style={[styles.racersRow,
+                                    isDarkMode ?
+                                        { backgroundColor: index % 2 === 0 ? '#878787' : '#d6d0d0' }
+                                        :
+                                        { backgroundColor: index % 2 === 0 ? '#d6d0d0' : '#ffffff' }
+                                    ]}
                                 >
                                     <TouchableOpacity
                                         onPress={() => navigation.navigate('RacerCircuitsScreen', { driverId: item.driverId })}
                                         key={index}
                                         style={styles.tableCell}
                                     >
-                                        <Text>
-                                            {'>>' + item.driverId + '<<'}
+                                        <Text >
+                                            {item.driverId}
                                         </Text>
                                     </TouchableOpacity>
 
@@ -167,7 +167,7 @@ const RacersTable = (props: TableProps) => {
 
                     />
             }
-            <View style={styles.racersFooter}>
+            <View style={[styles.racersFooter, ThemeInstall]}>
 
                 <TouchableOpacity
                     disabled={currentPage === 1}
@@ -177,25 +177,37 @@ const RacersTable = (props: TableProps) => {
                     }}
                 >
                     <Text
-                        style={[styles.racersFooterText, { color: currentPage === 1 ? 'gray' : '#000000' }]}
+                        style={[styles.racersFooterText,
+                        isDarkMode ?
+                            { color: currentPage === 1 ? 'gray' : '#ffffff' }
+                            :
+                            { color: currentPage === 1 ? 'gray' : '#000000' }
+                        ]}
                     >
                         {prevPageText}
                     </Text>
                 </TouchableOpacity>
 
-                <Text style={styles.racersFooterText}>{currentPage}</Text>
+                <Text
+                    style={[styles.racersFooterText, ThemeInstall]}
+                >{currentPage}</Text>
 
                 <TouchableOpacity onPress={() => {
                     setCurrentPage(currentPage + 1)
                 }}
 
                 >
-                    <Text style={styles.racersFooterText}>{nextPageText}</Text>
+                    <Text
+                        style={[styles.racersFooterText, ThemeInstall]}
+                    >
+                        {nextPageText}
+                    </Text>
                 </TouchableOpacity>
             </View>
 
         </>
     );
+
 };
 
 const styles = StyleSheet.create({
@@ -230,6 +242,16 @@ const styles = StyleSheet.create({
     },
     racersHeaderCell: {
         borderColor: '#000000',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        flex: 1,
+        height: 50,
+        borderLeftRadius: 5,
+        borderRightRadius: 5,
+    },
+    racersHeaderCellDark: {
+        borderColor: '#ffffff',
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,

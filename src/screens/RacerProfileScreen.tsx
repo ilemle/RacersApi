@@ -12,6 +12,7 @@ import Screen from '../components/Screen'
 import Colors from 'react-native/Libraries/NewAppScreen/components/Colors';
 import { useNavigation } from '@react-navigation/native';
 import { Racer } from '../types';
+import BackButton from '../components/BackButton';
 
 
 const RacerProfileScreen = (props) => {
@@ -32,12 +33,7 @@ const RacerProfileScreen = (props) => {
     return (
         <Screen>
             <>
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                >
-                    <Text style={styles.backButtonText}>Назад</Text>
-                </TouchableOpacity>
-
+                <BackButton />
                 <View style={styles.contentView}>
 
                     <View style={styles.rowInfo}>
@@ -78,10 +74,6 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         borderRadius: 6,
-    },
-    backButtonText: {
-        marginBottom: 16,
-        fontSize: 16,
     },
     rowInfo: {
         flexDirection: 'row',
