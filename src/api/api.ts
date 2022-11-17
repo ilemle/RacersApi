@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { paginationSize } from '../constants'
 
-const baseUrl = 'http://ergast.com/api/f1'
+const baseUrl = 'https://ergast.com/api/f1'
 
 
 export const getRacers = (selectedPage: number) => {
